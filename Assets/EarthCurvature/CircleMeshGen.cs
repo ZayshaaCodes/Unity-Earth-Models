@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//This creates a teselated cirular arc mesh
+
+using UnityEngine;
 using System.Collections;
 
 public class CircleMeshGen : MonoBehaviour {
@@ -6,6 +8,7 @@ public class CircleMeshGen : MonoBehaviour {
     public Mesh m;
 
     public Material mat;
+
 
     public float depth = 10;
     public float radius = 100;

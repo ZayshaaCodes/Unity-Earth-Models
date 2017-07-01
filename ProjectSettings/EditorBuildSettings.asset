@@ -6,8 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 0
-    path: Assets/_Props/FragmentingBox/fragBoxTest.unity
+    path: 
     guid: 48d08c67dfe807f47bc58c95a743c23c
   - enabled: 1
-    path: Assets/_Scenes/Soundly Pylons.unity
+    path: Assets/Soundly Pylons.unity
     guid: 8334643fa4d299c4da5b7cf36593bbff
