@@ -35,6 +35,9 @@ public class SphereMeshGen2 : MonoBehaviour {
 
     public Mesh mesh;
 
+    public circleData HorizonCircle;
+    public Color HorizonCircleColor = Color.white;
+
 	// Use this for initialization
 	void Start () {
 	}
@@ -60,8 +63,8 @@ public class SphereMeshGen2 : MonoBehaviour {
         if (heightController)
         {
             float d = Vector3.Distance(heightController.transform.position, transform.position);
-            print(d);
-            xAngle = Mathf.Acos((float)radius / d) * Mathf.Rad2Deg * 2.125f ;
+            //print(d);
+            xAngle = Mathf.Acos((float)radius / d) * Mathf.Rad2Deg * 2.375f ;
             if (xAngle > 90f)
                 xAngle = 90f;
 
@@ -154,6 +157,20 @@ public class SphereMeshGen2 : MonoBehaviour {
 
     void OnDrawGizmos()
     {
+
+        if (heightController)
+        {
+            var r = (float)radius;
+            var h = Vector3.Distance(heightController.transform.position, transform.position) - r;
+
+            var theta = Mathf.Acos(r / (r + h));
+
+            var a = r * Mathf.Sin(theta);
+            var b = r * Mathf.Cos(theta);
+
+            CircleGizmo.DrawCircle(new circleData(HorizonCircleColor, a, 1000), Matrix4x4.TRS(transform.position + new Vector3(0, b, 0), Quaternion.Euler(0, 0, 0), Vector3.one));
+
+        }
 
         Gizmos.matrix = transform.localToWorldMatrix;
         for (int i = 0; i < radialLineCount; i++)
