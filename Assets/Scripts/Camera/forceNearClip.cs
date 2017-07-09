@@ -6,10 +6,12 @@ public class forceNearClip : MonoBehaviour {
 
     public Camera cam;
 
+    public bool overrideNearClip = true;
     public float nearClip = .001f;
-    public float fovOverride = .1f;
 
     public bool overrideFov = true;
+    public float fovOverride = .1f;
+
 
 	// Use this for initialization
 	void Start () {
@@ -18,8 +20,10 @@ public class forceNearClip : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
-        cam.nearClipPlane = nearClip;
+        if (overrideNearClip)
+        {
+            cam.nearClipPlane = nearClip;
+        }
 
         if (overrideFov)
         {
