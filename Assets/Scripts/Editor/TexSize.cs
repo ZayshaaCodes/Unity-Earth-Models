@@ -52,4 +52,7 @@ public class TexSize2 : EditorWindow
             AssetDatabase.ImportAsset(path);
         }
     }
+
+
+
 }

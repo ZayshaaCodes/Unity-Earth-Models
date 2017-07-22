@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEditor;
 using System.Collections;
 
 public class CamDrawHorizon : MonoBehaviour {
@@ -12,6 +13,14 @@ public class CamDrawHorizon : MonoBehaviour {
     public Color ColorCenterVertical = Color.red;
     public float length = 10f;
     public float distance = 1f;
+
+    [MenuItem("Tools/TestCode")]
+    static void runCode()
+    {
+
+        var v = new Vector3(-.25f, .24f, -1.5f);
+        Debug.Log(Vector3.Project(v, Vector3.right));
+    }
 
     void OnDrawGizmos()
     {

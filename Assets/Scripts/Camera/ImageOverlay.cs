@@ -9,12 +9,17 @@ public class ImageOverlay : MonoBehaviour
     public Texture2D image;
 
     [Range(0, 1)]
+    public float opacity = .5f;
+
+    public GameObject followObjectScreenspace;
+
+    [Range(0, 1)]
     public float sizeX = 1;
     [Range(0, 1)]
     public float sizeY = 1;
-    [Range(-1, 1)]
+    [Range(0, 1)]
     public float posX = 0;
-    [Range(-1, 1)]
+    [Range(0, 1)]
     public float posY = 0;
 
     public bool lockImageAspect = true;
@@ -25,6 +30,16 @@ public class ImageOverlay : MonoBehaviour
     [ExecuteInEditMode]
     void OnPostRender()
     {
+
+        var cam = Camera.main;
+
+        if (followObjectScreenspace)
+        {
+            cam.WorldToScreenPoint(followObjectScreenspace.transform.position);
+            
+
+        }
+
         if (!enabled)
         {
             return;
@@ -36,14 +51,21 @@ public class ImageOverlay : MonoBehaviour
             return;
         }
 
-        float aspect = image.width / image.height;
+        float aspect = (float)image.width / image.height;
+        float screenAspect = (float)Screen.width / Screen.height;
 
         mat.SetTexture("_MainTex", image);
+        mat.SetFloat("_Opacity", opacity);
 
-        float left = posX * Screen.width;
-        float right = posX * Screen.width + image.width * sizeX;
-        float bottom = posY * Screen.height;
-        float top = posY * Screen.height + image.height * (lockImageAspect? sizeX / aspect : sizeY);
+        if (lockImageAspect)
+        {
+            //sizeY = sizeX / aspect;
+        }
+
+        float left = posX * Screen.width - image.width / 2 * sizeX;
+        float right = posX * Screen.width + image.width / 2 * sizeX;
+        float bottom = posY * Screen.height - image.height / 2 * sizeX;
+        float top = posY * Screen.height + image.height / 2 * sizeX;
 
         //print(left + ", " + right + ", " + left + ", " + top + ", " + bottom);
 

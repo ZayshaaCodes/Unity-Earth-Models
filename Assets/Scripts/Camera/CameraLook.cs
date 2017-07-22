@@ -43,7 +43,7 @@ public class CameraLook : MonoBehaviour {
             h * strafeSpeed * multiplier * Time.deltaTime, 0, 
             v * moveSpeed * multiplier * Time.deltaTime);
 
-        if (Mathf.Abs(camMove.magnitude) < .01f)
+        if (Mathf.Abs(camMove.magnitude) < .0001f)
         {
             camMove = Vector3.zero;
         }

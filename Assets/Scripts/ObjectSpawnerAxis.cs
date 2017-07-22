@@ -8,6 +8,7 @@ public class ObjectSpawnerAxis : MonoBehaviour {
     public GameObject spawnPrefab;
 
     public Vector3 rotationCenter;
+    public GameObject rotationCenterObject;
     public Vector3 rotationAxis;
 
     public float stepDistance;
@@ -30,6 +31,12 @@ public class ObjectSpawnerAxis : MonoBehaviour {
 
     public void Spawn()
     {
+
+        if (rotationCenterObject)
+        {
+            rotationCenter = rotationCenterObject.transform.position - transform.position ;
+        }
+
         if (spawnedObjects.Count > 0)
             Clear();
 
@@ -88,3 +95,4 @@ public class ObjectSpawnerAxis : MonoBehaviour {
 
     }
 }
+
