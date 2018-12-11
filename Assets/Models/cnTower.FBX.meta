@@ -1,9 +1,7 @@
 fileFormatVersion: 2
 guid: b3e5208166e741e4493202f9f102bf79
-timeCreated: 1480192912
-licenseType: Free
 ModelImporter:
-  serializedVersion: 19
+  serializedVersion: 23
   fileIDToRecycleName:
     100000: Box001
     100002: Box002
@@ -28,6 +26,7 @@ ModelImporter:
     100040: Plane001
     100042: VRaySun001
     100044: VRaySun001.Target
+    100046: CN TOWER
     400000: Box001
     400002: Box002
     400004: Box003
@@ -51,6 +50,17 @@ ModelImporter:
     400040: Plane001
     400042: VRaySun001
     400044: VRaySun001.Target
+    400046: CN TOWER
+    2100000: 'Material #28'
+    2100002: 'Material #26'
+    2100004: 'Material #29'
+    2100006: 'Material #30'
+    2100008: 'Material #43'
+    2100010: 01 - Default
+    2100012: 'Material #125'
+    2100014: 'Material #126'
+    2100016: 'Material #127'
+    2100018: 'Material #129'
     2300000: Box001
     2300002: Box002
     2300004: Box003
@@ -71,6 +81,7 @@ ModelImporter:
     2300034: Cylinder007
     2300036: Object001
     2300038: Plane001
+    2300040: CN TOWER
     3300000: Box001
     3300002: Box002
     3300004: Box003
@@ -91,6 +102,7 @@ ModelImporter:
     3300034: Cylinder007
     3300036: Object001
     3300038: Plane001
+    3300040: CN TOWER
     4300000: Box001
     4300002: Cylinder003
     4300004: Cylinder004
@@ -111,12 +123,60 @@ ModelImporter:
     4300034: Box013
     4300036: Cylinder007
     4300038: Plane001
+    4300040: CN TOWER
     7400000: Take 001
     9500000: //RootNode
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #125'
+    second: {fileID: 2100000, guid: ef87079fdb1525d4c81985c29a9317e3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #126'
+    second: {fileID: 2100000, guid: 9ff5d4b2992ad7c419ebb0f296f4ada4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #127'
+    second: {fileID: 2100000, guid: 2233fd70ce2f22240b2f50d0821bc565, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #129'
+    second: {fileID: 2100000, guid: eaa24ddca1ffd5443b4e54519c8139dd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #26'
+    second: {fileID: 2100000, guid: 88debf391f84cc94490b66901cd2d648, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #28'
+    second: {fileID: 2100000, guid: e1566b4c12e941e40bca2760f7db953c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #29'
+    second: {fileID: 2100000, guid: 7c0d444df2e8468439fc53f083a4d69f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #30'
+    second: {fileID: 2100000, guid: 2858ce18f0532d141bd85afee9d344e5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #43'
+    second: {fileID: 2100000, guid: a54cdb8b2d3d54a4fac6cacbe1d0322e, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
     materialSearch: 1
+    materialLocation: 1
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
@@ -129,12 +189,15 @@ ModelImporter:
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations: []
     isReadable: 1
   meshes:
@@ -142,22 +205,34 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 0
     importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
     useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
   importAnimation: 0
   copyAvatar: 0
   humanDescription:
@@ -172,7 +247,6 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     rootMotionBoneName: 
-    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
     hasExtraRoot: 1
     skeletonHasParents: 0

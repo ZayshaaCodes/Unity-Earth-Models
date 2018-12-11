@@ -127,7 +127,7 @@ public class SphereMeshGen2 : MonoBehaviour {
             mesh.RecalculateNormals();
             mesh.RecalculateBounds();
 
-            mf.mesh = mesh;
+            mf.sharedMesh = mesh;
         }
     }
 	

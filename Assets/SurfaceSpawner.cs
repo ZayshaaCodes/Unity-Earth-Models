@@ -40,9 +40,6 @@ public class SurfaceSpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-
-
         (Vector3[] positions, Quaternion[] rotations) pts;
         if (so)
         {
@@ -69,18 +66,22 @@ public class SurfaceSpawner : MonoBehaviour
                 renderxforms[i] = Matrix4x4.TRS(pts.positions[i] + postionOffset, pts.rotations[i] * Quaternion.Euler(rotationOffset), instanceScale * scaleMultiplier);
             }
 
-            Mesh mesh = spawnPrefab.GetComponent<MeshFilter>().sharedMesh;
-            Material mat = spawnPrefab.GetComponent<MeshRenderer>().sharedMaterial;
-            Graphics.DrawMeshInstanced(mesh,0,mat,renderxforms,renderxforms.Length);
+            var mfs = spawnPrefab.GetComponentsInChildren<MeshFilter>();
 
+            foreach (MeshFilter meshFilter in mfs)
+            {
+                Mesh mesh = meshFilter.sharedMesh;
+                Material[] mats = meshFilter.GetComponent<MeshRenderer>()?.sharedMaterials;
+
+                if (mats != null && mesh != null)
+                    for (var i = 0; i < mats.Length; i++)
+                        Graphics.DrawMeshInstanced(mesh, i, mats[i], renderxforms, renderxforms.Length);
+            }
         }
-
     }
 
     public (Vector3[] positions, Quaternion[] rotations) GetPoints(PlaneObject planeObject)
     {
-
-
         return (null, null);
     }
 
