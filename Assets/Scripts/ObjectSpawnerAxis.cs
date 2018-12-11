@@ -13,9 +13,9 @@ public class ObjectSpawnerAxis : MonoBehaviour {
 
     public float stepDistance;
     
-    float unitsPerDegree { get { return (2f * Mathf.PI * rotationCenter.magnitude / 360f); } }
+    double unitsPerDegree { get { return (2f * Mathf.PI * rotationCenter.magnitude / 360f); } }
     
-    public float radius { get { return rotationCenter.magnitude; } }
+    public double radius { get { return rotationCenter.magnitude; } }
     
     public Vector3 initialSpawnRotation;
     public int count = 10;
@@ -44,7 +44,7 @@ public class ObjectSpawnerAxis : MonoBehaviour {
         {
             var newObj = Instantiate(spawnPrefab,transform.position, transform.rotation * Quaternion.Euler(initialSpawnRotation), transform);
 
-            newObj.transform.RotateAround(transform.TransformPoint(rotationCenter), transform.TransformDirection(rotationAxis), (stepDistance / unitsPerDegree) * i);
+            newObj.transform.RotateAround(transform.TransformPoint(rotationCenter), transform.TransformDirection(rotationAxis), (float)(stepDistance / unitsPerDegree) * i);
 
             newObj.transform.localScale = Vector3.one;
 

@@ -7,7 +7,11 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 0
     path: 
-    guid: 48d08c67dfe807f47bc58c95a743c23c
-  - enabled: 1
+    guid: 00000000000000000000000000000000
+  - enabled: 0
     path: Assets/Soundly Pylons.unity
     guid: 8334643fa4d299c4da5b7cf36593bbff
+  - enabled: 1
+    path: Assets/Earth Model 2.0.unity
+    guid: dbe0fb8e87f54854090046a085298976
+  m_configObjects: {}

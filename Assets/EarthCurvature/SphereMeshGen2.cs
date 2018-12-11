@@ -19,6 +19,8 @@ public class SphereMeshGen2 : MonoBehaviour {
     double xStep, yStep;
     public double radius = 3959;
 
+    public bool offsetCenter;
+
     public bool showGizmos = true;
 
     Vector3[] points;
@@ -26,18 +28,9 @@ public class SphereMeshGen2 : MonoBehaviour {
     int[] tris;
 
     public bool update = true;
-
-    public int radialLineCount = 100;
-    public float angleBeweenRadialLines = 1f / 69f;
-    public float gizmoSize = .03f;
-    public Color gizmoColor = Color.yellow;
-    public float verticalLineHeightMiles = .002f;
-
+    
     public Mesh mesh;
-
-    public circleData HorizonCircle;
-    public Color HorizonCircleColor = Color.white;
-
+    
 	// Use this for initialization
 	void Start () {
 	}
@@ -57,12 +50,12 @@ public class SphereMeshGen2 : MonoBehaviour {
         GenerateMesh();
     }
 
-    void GenerateMesh()
+    public void GenerateMesh()
     {
 
         if (heightController)
         {
-            float d = Vector3.Distance(heightController.transform.position, transform.position);
+            float d = Vector3.Distance(heightController.transform.position, transform.position - transform.up * (float)radius);
             //print(d);
             xAngle = Mathf.Acos((float)radius / d) * Mathf.Rad2Deg * 2.375f ;
             if (xAngle > 90f)
@@ -97,7 +90,7 @@ public class SphereMeshGen2 : MonoBehaviour {
                 z = z * System.Math.Sqrt(1.0 - (x2 * 0.5) - (y2 * 0.5) + ((x2 * y2) / 3.0)) * radius;
 
 
-                points[i * (ySegments + 1) + j] = new Vector3((float)x, (float)y, (float)z);
+                points[i * (ySegments + 1) + j] = new Vector3((float) x, (float)y, (float)(z - (offsetCenter ? -radius : 0)));
 
             }
         }
@@ -153,37 +146,6 @@ public class SphereMeshGen2 : MonoBehaviour {
             GenerateMesh();
             update = false;
         }
-    }
-
-    void OnDrawGizmos()
-    {
-
-        if (heightController)
-        {
-            var r = (float)radius;
-            var h = Vector3.Distance(heightController.transform.position, transform.position) - r;
-
-            var theta = Mathf.Acos(r / (r + h));
-
-            var a = r * Mathf.Sin(theta);
-            var b = r * Mathf.Cos(theta);
-
-            CircleGizmo.DrawCircle(new circleData(HorizonCircleColor, a, 1000), Matrix4x4.TRS(transform.position + new Vector3(0, b, 0), Quaternion.Euler(0, 0, 0), Vector3.one));
-
-        }
-
-        Gizmos.matrix = transform.localToWorldMatrix;
-        for (int i = 0; i < radialLineCount; i++)
-        {
-            float radians =  angleBeweenRadialLines * Mathf.Deg2Rad ;
-            float lineDistance = (float)radius + verticalLineHeightMiles;
-
-            Vector3 dir = new Vector3(Mathf.Sin(radians * i), 0, -Mathf.Cos(radians * i));
-
-            Gizmos.DrawLine(dir * (float)radius, dir * lineDistance);
-        }
-
-        //circleData circle = new circleData(Color.red, )
     }
 
 }

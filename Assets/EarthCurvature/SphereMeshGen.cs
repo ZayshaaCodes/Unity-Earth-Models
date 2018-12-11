@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
+
+#if UNITY_EDITOR
+using UnityEditor;    
+#endif
 
 [RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(MeshFilter))]
@@ -259,7 +262,10 @@ public class SphereMeshGen : MonoBehaviour {
             lerpState.endAngle = Mathf.Lerp(start.endAngle, end.endAngle, t);
 
             SetState(lerpState);
+
+#if UNITY_EDITOR
             SceneView.RepaintAll();
+#endif
 
             yield return new WaitForEndOfFrame();
 

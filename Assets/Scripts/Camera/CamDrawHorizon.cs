@@ -14,6 +14,7 @@ public class CamDrawHorizon : MonoBehaviour {
     public float length = 10f;
     public float distance = 1f;
 
+#if UNITY_EDITOR
     [MenuItem("Tools/TestCode")]
     static void runCode()
     {
@@ -21,6 +22,7 @@ public class CamDrawHorizon : MonoBehaviour {
         var v = new Vector3(-.25f, .24f, -1.5f);
         Debug.Log(Vector3.Project(v, Vector3.right));
     }
+#endif
 
     void OnDrawGizmos()
     {
