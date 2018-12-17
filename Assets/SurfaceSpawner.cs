@@ -22,19 +22,19 @@ public class SurfaceSpawner : MonoBehaviour
 
     public bool useFixedSpacing = true;
 
+    public float p1Angle = 0;
+    public float p2Angle = 0;
+
     private void OnEnable()
     {
         so = GetComponentInParent<SphereObject>();
         po = GetComponentInParent<PlaneObject>();
 
-        if (startPoint == null && transform.childCount > 0)
-        {
+        if (startPoint == null)
             startPoint = transform;
-        }
         if (endPoint == null && transform.childCount > 0)
-        {
             endPoint = transform.GetChild(0);
-        }
+
     }
 
     // Update is called once per frame
@@ -43,11 +43,28 @@ public class SurfaceSpawner : MonoBehaviour
         (Vector3[] positions, Quaternion[] rotations) pts;
         if (so)
         {
-            pts = so.GetPointsOnArc(startPoint.position, endPoint.position, instanceSpacing, useFixedSpacing);
+            if (endPoint)
+                pts = so.GetPointsOnArc(startPoint.position, endPoint.position, instanceSpacing, useFixedSpacing);
+            else
+            {
+                var pt = so.ProjectToSphereSurface(startPoint.position);
+                var normal = so.GetDeltaFromSphereCenter(startPoint.position);
+
+                p1Angle = Vector3.Angle(transform.up, normal);
+
+                var binormal = Vector3.Cross(normal, startPoint.forward);
+                var tangent = Vector3.Cross(binormal, normal);
+
+                pts = (new [] {pt}, new[] {Quaternion.LookRotation(tangent, normal)});
+            }
+        }
+        else if (po)
+        {
+            pts = po.GetPointsOnLine(startPoint.position, endPoint.position, instanceSpacing, useFixedSpacing);
         }
         else
         {
-            pts = po.GetPointsOnLine(startPoint.position, endPoint.position, instanceSpacing, useFixedSpacing);
+            return;
         }
 
         var lr = GetComponentInChildren<LineRenderer>();
@@ -85,17 +102,33 @@ public class SurfaceSpawner : MonoBehaviour
         return (null, null);
     }
 
-
     private void OnDrawGizmos()
     {
+
         if (startPoint && endPoint)
         {
             //Gizmos.DrawWireSphere(so.ProjectToSphereSurface(startPoint.position), .1f);
             //Gizmos.DrawWireSphere(so.ProjectToSphereSurface(endPoint.position), .1f);
+            if (so)
+            {
+                Gizmos.DrawLine(startPoint.position, so.ProjectToSphereSurface(startPoint.position));
+                Gizmos.DrawLine(endPoint.position, so.ProjectToSphereSurface(endPoint.position));
+            } else if (po)
+            {
 
-            Gizmos.DrawLine(startPoint.position, so.ProjectToSphereSurface(startPoint.position));
-            Gizmos.DrawLine(endPoint.position, so.ProjectToSphereSurface(endPoint.position));
+                Gizmos.DrawLine(startPoint.position, po.ProjectToPlanarSurface(startPoint.position));
+                Gizmos.DrawLine(endPoint.position, po.ProjectToPlanarSurface(endPoint.position));
+            }
         }
+    }
 
+    public void SpawnInstances()
+    {
+
+    }
+
+    public void ClearInstances()
+    {
+        
     }
 }

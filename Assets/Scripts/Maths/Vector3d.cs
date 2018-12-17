@@ -35,6 +35,14 @@ public struct Vector3d
         );
     }
 
+    public static Vector3d Cross(Vector3d lhs, Vector3d rhs)
+    {
+        return new Vector3d(
+            lhs.y * rhs.z - lhs.z * rhs.y,
+            lhs.z * rhs.x - lhs.x * rhs.z,
+            lhs.x * rhs.y - lhs.y * rhs.x);
+    }
+
     // Set x, y and z components of an existing Vector3.
     public void Set(double newX, double newY, double newZ) { x = newX; y = newY; z = newZ; }
 
@@ -195,8 +203,7 @@ public struct Vector3d
         double mag = Magnitude(value);
         if (mag > kEpsilon)
             return value / mag;
-        else
-            return zeroVector;
+        return zeroVector;
     }
     
     // Returns this vector with a ::ref::magnitude of 1 (RO).

@@ -10,6 +10,7 @@ public class forceNearClip : MonoBehaviour {
     public float nearClip = .001f;
 
     public bool overrideFov = true;
+    [Range(.1f,90f)]
     public float fovOverride = .1f;
 
 

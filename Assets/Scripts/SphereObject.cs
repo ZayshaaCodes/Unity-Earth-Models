@@ -21,7 +21,9 @@ public class SphereObject : MonoBehaviour
     public Vector3 LocalCenter => Vector3.down * radius;
 
     public Transform hextants;
-    
+
+    public bool HextantAutosize;
+
     public SurfaceSpawner[] surfaceSpawners;
 
     public LineRenderer horizonLineRenderer;
@@ -50,7 +52,7 @@ public class SphereObject : MonoBehaviour
                     float mi = (observer.transform.position - (Vector3)WorldCenter).magnitude - radius;
                     double ft = mi * 5280.0;
 
-                    return $"{mi:N2}mi ({ft:N2}ft)";
+                    return $"{mi:N5}mi ({ft:N2}ft)";
                 }
             });
         }
@@ -132,8 +134,17 @@ public class SphereObject : MonoBehaviour
 
     public Vector3 ProjectToSphereSurface(Vector3 worldPos)
     {
-        Vector3 delta = worldPos - WorldCenter;
-        return (WorldCenter + delta.normalized * radius);
+        var wc = (Vector3d) WorldCenter;
+
+        Vector3d delta = (Vector3d) worldPos - wc;
+        return (wc + delta.normalized * radius);
+    }
+
+    public Vector3 GetDeltaFromSphereCenter(Vector3d worldPos)
+    {
+        var wc = (Vector3d) WorldCenter;
+        
+        return worldPos - wc;
     }
 
     private void OnDrawGizmos()
@@ -174,11 +185,10 @@ public class SphereObject : MonoBehaviour
 
         //get the binormal for the great circle this will be the axis each instance is rotated along
 
-
-        Vector3 binormal = Vector3.Cross(startDelta, endDelta);
+        Vector3d binormal = Vector3d.Cross(startDelta, endDelta);
 
         //get the angle along the great circle;
-        double angle = Vector3.Angle((Vector3) startDelta, (Vector3) endDelta);
+        double angle = Vector3d.Angle(startDelta, endDelta);
 
         //DistanceAlongSurface;
         double arcDistance = DegreeDistance * angle;
@@ -203,7 +213,7 @@ public class SphereObject : MonoBehaviour
             //this is the surface tangent, facing forward.
             var tangent = Vector3.Cross(binormal, surfaceVector).normalized;
 
-            points.positions[i] = (Vector3)((Vector3d) WorldCenter + ((Vector3d) surfaceVector).normalized * radius);
+            points.positions[i] = (Vector3d) WorldCenter + ((Vector3d) surfaceVector).normalized * radius;
             points.rotations[i] = Quaternion.LookRotation(tangent, surfaceVector);
         }
 

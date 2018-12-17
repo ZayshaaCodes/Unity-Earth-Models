@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -8,6 +9,7 @@ using UnityEditor;
 
 [RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(MeshFilter))]
+[ExecuteInEditMode]
 public class SphereMeshGen : MonoBehaviour {
 
     public List<SphereMeshState> states = new List<SphereMeshState>();
@@ -36,15 +38,15 @@ public class SphereMeshGen : MonoBehaviour {
     public int triCount;
     
     public bool squareSymetry = true;
-    [Range(-180, 180)]
-    public float startSweepAngle = -5;
-    [Range(-180, 180)]
-    public float endSweepAngle = 5;
+    [Range(-90, 90)]
+    public float startLatAngle = -5;
+    [Range(-90, 90)]
+    public float endLatAngle = 5;
 
-    [Range(-90, 90)]
-    public float startAngle = -5;
-    [Range(-90, 90)]
-    public float endAngle = 5;
+    [Range(-180, 180)]
+    public float startLonAngle = -5;
+    [Range(-180, 180)]
+    public float endLonAngle = 5;
 
     public bool generateEndCaps = false;
 
@@ -74,18 +76,23 @@ public class SphereMeshGen : MonoBehaviour {
 
     //}
 
+    void Update()
+    {
+        OnValidate();
+    }
+
     void OnValidate()
     {
         mf = GetComponent<MeshFilter>();
         mr = GetComponent<MeshRenderer>();
 
-        if (LatSegs < 3)
+        if (LatSegs < 2)
         {
-            LatSegs = 3;
+            LatSegs = 2;
         }
-        if (LonSegs < 3)
+        if (LonSegs < 2)
         {
-            LonSegs = 3;
+            LonSegs = 2;
         }
 
         genSphereMesh();
@@ -95,151 +102,108 @@ public class SphereMeshGen : MonoBehaviour {
     public void genSphereMesh()
     {
 
+        int top = 90 - Math.Abs(startLatAngle) < .0001f ? 1 : LonSegs + 1;
+        int bottom = 90 - Math.Abs(endLatAngle) < .0001f ? 1 : LonSegs + 1;
+        int mid = (LonSegs + 1) * (LatSegs - 1);
 
-        mesh = new Mesh();
+        points = new Vector3[top + bottom + mid];
+        
+        var latStep = (endLatAngle - startLatAngle) / LatSegs;
+        var lonStep = (endLonAngle - startLonAngle) / LonSegs;
 
-        float pi = Mathf.PI;
-        points = new Vector3[(LatSegs - 1) * (LonSegs + 1) + 2];
-        pointCount = points.Length;
-
-        float latAngleStep = ((endAngle - startAngle) * Mathf.Deg2Rad) / LatSegs;
-        float lonAngleStep = ((endSweepAngle - startSweepAngle) * Mathf.Deg2Rad) / LonSegs;
-
-        for (int latIndex = 0; latIndex <= LatSegs; latIndex++)
+        //! Verts
+        var pntIndex = 0;
+        for (int i = 0; i <= LatSegs; i++)
         {
-            if (latIndex == 0) //first
+            if (i == 0)
             {
-                float y = r * Mathf.Sin(latAngleStep * latIndex + startAngle * Mathf.Deg2Rad);
-                float x = 0;
-                float z = 0;
-                points[0] = new Vector3(x, y, z);
-                continue;
-            }
-            else if (latIndex == LatSegs) //last
-            {
-                float y = r * Mathf.Sin(latAngleStep * latIndex + startAngle * Mathf.Deg2Rad);
-                float x = 0;
-                float z = 0;
-                points[(LatSegs - 1) * (LonSegs + 1) + 1] = new Vector3(x, y, z);
-                continue;
-            }
-            else // middle
-            {
-                for (int lon = 0; lon <= LonSegs; lon++)
+                for (int j = 0; j < top; j++)
                 {
-                    float br = r * Mathf.Cos(latAngleStep * latIndex + startAngle * Mathf.Deg2Rad);
-
-                    float y = r * Mathf.Sin(latAngleStep * latIndex + startAngle * Mathf.Deg2Rad);
-                    float x = br * Mathf.Cos(lonAngleStep * lon + startSweepAngle * Mathf.Deg2Rad);
-                    float z = br * Mathf.Sin(lonAngleStep * lon + startSweepAngle * Mathf.Deg2Rad);
-
-                    //
-                    points[(latIndex - 1) * (LonSegs + 1) + 1 + lon] = new Vector3(x, y, z);
-
+                    Vector3 sp = GetSpherePoint(startLatAngle, startLonAngle + j * lonStep);
+                    //Debug.DrawLine(Vector3.zero, sp, Color.blue);
+                    points[pntIndex] = sp;
+                    pntIndex++;
                 }
-            }
-
-        }
-        mesh.vertices = points;
-
-
-
-        tris = new int[(LonSegs * 2 * (LatSegs - 1)) * 6];
-
-        triCount = 0;
-
-        for (int lat = 0; lat < LatSegs; lat++)
-        {
-
-
-            if (lat == 0) // Top Ring
+            } else if (i == LatSegs)
             {
-
-                for (int lon = 0; lon < LonSegs; lon++)
+                for (int j = 0; j < bottom; j++)
                 {
-                    tris[lon * 3 + 0] = 0;
-                    tris[lon * 3 + 1] = lon + 1;
-                    tris[lon * 3 + 2] = lon + 2;
-
-                    triCount++;
+                    Vector3 sp = GetSpherePoint(endLatAngle, startLonAngle + j * lonStep);
+                    //Debug.DrawLine(Vector3.zero, sp, Color.red);
+                    points[pntIndex] = sp;
+                    pntIndex++;
                 }
-            }
-            else if (lat < LatSegs - 1) // middle Rings
+            } else
             {
-
-                for (int lon = 0; lon < LonSegs; lon++)
+                for (int j = 0; j < LonSegs + 1; j++)
                 {
-                    int offset = 1 + (LonSegs + 1) * (lat - 1) + lon;
+                    Vector3 sp = GetSpherePoint(startLatAngle + latStep * i, startLonAngle + lonStep * j);
+                    //Debug.DrawLine(Vector3.zero, GetSpherePoint(startLatAngle + latStep * i, startLonAngle + lonAngle * j),Color.yellow);
 
-                    tris[triCount * 3 + 0] = offset;
-                    tris[triCount * 3 + 1] = offset + LonSegs + 1;
-                    tris[triCount * 3 + 2] = offset + LonSegs + 2;
-
-                    tris[triCount * 3 + 3] = offset + LonSegs + 2;
-                    tris[triCount * 3 + 4] = offset + 1;
-                    tris[triCount * 3 + 5] = offset;
-
-                    triCount += 2;
-
+                    points[pntIndex] = sp;
+                    pntIndex++;
                 }
-            }
-            else
-            {
-                for (int lon = 0; lon < LonSegs; lon++)
-                {
-
-                    int offset = 1 + (LonSegs + 1) * (lat - 1) + lon;
-
-                    tris[triCount * 3 + 0] = points.Length - 1;
-                    tris[triCount * 3 + 1] = offset + 1;
-                    tris[triCount * 3 + 2] = offset;
-
-                    triCount++;
-                }
-
             }
         }
 
-        uvs = new Vector2[points.Length];
-        for (int lat = 0; lat < LatSegs + 1; lat++)
+        //! Tris
+        tris = new int[LatSegs * LonSegs * 2 * 3];
+        var ti = 0;
+        for (int i = 0; i < LatSegs; i++)
         {
-            if (lat == 0) //first
+            for (int j = 0; j < LonSegs; j++)
             {
-                float u = .5f;
-                float v = 0f;
-                uvs[0] = new Vector2(u, v);
-                continue;
+                var f = i * (LonSegs + 1) + j;
+
+                tris[ti + 0] = f;
+                tris[ti + 1] = f + 1;
+                tris[ti + 2] = f + 1 + LonSegs;
+
+                tris[ti + 3] = f + 1 + LonSegs;
+                tris[ti + 4] = f + LonSegs;
+                tris[ti + 5] = f;
+
+                ti += 6;
+                //Debug.DrawLine(Vector3.zero, GetSpherePoint(startLatAngle + latStep * i, startLonAngle + lonAngle * j),Color.yellow);
             }
-            else if (lat == LatSegs) //last
-            {
-                float u = .5f;
-                float v = 1f;
-
-                uvs[points.Length - 1] = new Vector2(u, v);
-                continue;
-            }
-            else // middle
-            {
-                for (int lon = 0; lon <= LonSegs; lon++)
-                {
-                    float u = (float)lon / LonSegs;
-                    float v = (float)lat / LatSegs;
-
-                    uvs[(lat - 1) * (LonSegs + 1) + 1 + lon] = new Vector2(u, v);
-
-                }
-            }
-
         }
 
         mesh.vertices = points;
         mesh.triangles = tris;
-        mesh.uv = uvs;
+        //mesh.uv = uvs;
         mesh.RecalculateNormals();
 
         mf.sharedMesh = mesh;
 
     }
+
+
+    public Vector3 GetSpherePoint(double lat, double lon)
+    {
+
+        var degToRad = 2 * Math.PI / 360.0;
+        var latr = lat * degToRad;
+        var lonr = lon * degToRad;
+
+        double x, y, z, baseR;
+
+        y = r * Math.Sin(latr);
+        baseR = r * Math.Cos(latr);
+
+        z = baseR * Math.Sin(lonr);
+        x = baseR * Math.Cos(lonr);
+
+        return new Vector3((float) x,(float) y,(float) z);
+    }
+
+    public (double u, double v) ProjectLatLongToUVCoords(double lat, double lon)
+    {
+        var latVal = CookieMath.InverseLerp(-90, 90, lat);
+        var lonVal= CookieMath.InverseLerp(-180, 180, lon);
+
+        return (lonVal, latVal);
+    }
+
     public IEnumerator LerpMeshState(SphereMeshState start, SphereMeshState end, float speed)
     {
 
@@ -276,10 +240,10 @@ public class SphereMeshGen : MonoBehaviour {
     {
         LatSegs = state.LatSegs;
         LonSegs = state.LonSegs;
-        startSweepAngle = state.startSweepAngle;
-        endSweepAngle = state.endSweepAngle;
-        startAngle = state.startAngle;
-        endAngle = state.endAngle;
+        startLatAngle = state.startSweepAngle;
+        endLatAngle = state.endSweepAngle;
+        startLonAngle = state.startAngle;
+        endLonAngle = state.endAngle;
 
         genSphereMesh();
     }
@@ -288,10 +252,10 @@ public class SphereMeshGen : MonoBehaviour {
     void OnDrawGizmos()
     {
 
-        Vector3 d1 = (Quaternion.Euler(startSweepAngle, 0, startAngle) * Vector3.up);
-        Vector3 d2 = (Quaternion.Euler(startSweepAngle, 0, endAngle) * Vector3.up);
-        Vector3 d3 = (Quaternion.Euler(endSweepAngle, 0, endAngle) * Vector3.up);
-        Vector3 d4 = (Quaternion.Euler(endSweepAngle, 0, startAngle) * Vector3.up);
+        Vector3 d1 = (Quaternion.Euler(startLatAngle, 0, startLonAngle) * Vector3.up);
+        Vector3 d2 = (Quaternion.Euler(startLatAngle, 0, endLonAngle) * Vector3.up);
+        Vector3 d3 = (Quaternion.Euler(endLatAngle, 0, endLonAngle) * Vector3.up);
+        Vector3 d4 = (Quaternion.Euler(endLatAngle, 0, startLonAngle) * Vector3.up);
 
 
         if (drawGizmo)
@@ -353,10 +317,10 @@ public class SphereMeshState
         this.name = name;
         LatSegs = sGen.LatSegs;
         LonSegs = sGen.LonSegs;
-        startSweepAngle = sGen.startSweepAngle;
-        endSweepAngle = sGen.endSweepAngle;
-        startAngle = sGen.startAngle;
-        endAngle = sGen.endAngle;
+        startSweepAngle = sGen.startLatAngle;
+        endSweepAngle = sGen.endLatAngle;
+        startAngle = sGen.startLonAngle;
+        endAngle = sGen.endLonAngle;
     }
 
 
