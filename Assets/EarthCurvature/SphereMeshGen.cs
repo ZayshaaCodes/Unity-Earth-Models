@@ -156,18 +156,20 @@ public class SphereMeshGen : MonoBehaviour {
                 var f = i * (LonSegs + 1) + j;
 
                 tris[ti + 0] = f;
-                tris[ti + 1] = f + 1;
-                tris[ti + 2] = f + 1 + LonSegs;
+                tris[ti + 1] = f + 2 + LonSegs;
+                tris[ti + 2] = f + 1;
 
-                tris[ti + 3] = f + 1 + LonSegs;
-                tris[ti + 4] = f + LonSegs;
-                tris[ti + 5] = f;
+                tris[ti + 3] = f + 2 + LonSegs;
+                tris[ti + 4] = f;
+                tris[ti + 5] = f + 1 + LonSegs;
 
                 ti += 6;
                 //Debug.DrawLine(Vector3.zero, GetSpherePoint(startLatAngle + latStep * i, startLonAngle + lonAngle * j),Color.yellow);
             }
+
         }
 
+        mesh.triangles = null;
         mesh.vertices = points;
         mesh.triangles = tris;
         //mesh.uv = uvs;
@@ -251,45 +253,9 @@ public class SphereMeshGen : MonoBehaviour {
 
     void OnDrawGizmos()
     {
-
-        Vector3 d1 = (Quaternion.Euler(startLatAngle, 0, startLonAngle) * Vector3.up);
-        Vector3 d2 = (Quaternion.Euler(startLatAngle, 0, endLonAngle) * Vector3.up);
-        Vector3 d3 = (Quaternion.Euler(endLatAngle, 0, endLonAngle) * Vector3.up);
-        Vector3 d4 = (Quaternion.Euler(endLatAngle, 0, startLonAngle) * Vector3.up);
-
-
-        if (drawGizmo)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(transform.position, transform.position + d1 * r);
-            Gizmos.DrawLine(transform.position, transform.position + d2 * r);
-            Gizmos.DrawLine(transform.position, transform.position + d3 * r);
-            Gizmos.DrawLine(transform.position, transform.position + d4 * r);
-
-            Gizmos.color = Color.blue;
-            Gizmos.DrawLine(transform.position + d1 * r, transform.position + d1 * r * 1.125f);
-            Gizmos.DrawLine(transform.position + d2 * r, transform.position + d2 * r * 1.125f);
-            Gizmos.DrawLine(transform.position + d3 * r, transform.position + d3 * r * 1.125f);
-            Gizmos.DrawLine(transform.position + d4 * r, transform.position + d4 * r * 1.125f);
-        }
-
-        //foreach (var p in points)
-        //{
-        //    Gizmos.color = new Color(p.normalized.x, p.normalized.y, p.normalized.z, .5f);
-        //    Gizmos.DrawWireCube(transform.position + p, Vector3.one * .125f);
-
-        //}
-
-        //Gizmos.color = color;
-
-        //if (uvs == null)
-        //    return;
-        //foreach (Vector2 uv in uvs)
-        //{
-        //    //Gizmos.color = new Color(p.normalized.x, p.normalized.y, p.normalized.z, .5f);
-
-        //    Gizmos.DrawWireCube(transform.position + new Vector3(uv.x, uv.y, 0f), Vector3.one * .125f);
-        //}
+        //Gizmos.color = new Color(0f, 0f, 0f, 0.375f);
+        //Gizmos.matrix = transform.localToWorldMatrix;
+        //Gizmos.DrawWireMesh(mesh);
     }
 }
 
