@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 [ExecuteInEditMode]
 [RequireComponent(typeof(MeshRenderer))]
@@ -10,6 +11,8 @@ public class SurfaceSpawner : MonoBehaviour
     private PlaneObject po;
     public Transform startPoint;
     public Transform endPoint;
+
+    public SingleUnityLayer drawLayer;
 
     public GameObject spawnPrefab;
 
@@ -92,7 +95,8 @@ public class SurfaceSpawner : MonoBehaviour
 
                 if (mats != null && mesh != null)
                     for (var i = 0; i < mats.Length; i++)
-                        Graphics.DrawMeshInstanced(mesh, i, mats[i], renderxforms, renderxforms.Length);
+                        Graphics.DrawMeshInstanced(mesh, i, mats[i], renderxforms, renderxforms.Length,
+                            new MaterialPropertyBlock(), ShadowCastingMode.On, false, drawLayer.LayerIndex);
             }
         }
     }

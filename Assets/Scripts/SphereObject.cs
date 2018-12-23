@@ -21,6 +21,10 @@ public class SphereObject : MonoBehaviour
     public Vector3 LocalCenter => Vector3.down * radius;
 
     public Transform hextants;
+    public Transform uvSphere;
+
+    public float latitude;
+    public float longitude;
 
     public bool HextantAutosize;
 
@@ -55,6 +59,14 @@ public class SphereObject : MonoBehaviour
                     return $"{mi:N5}mi ({ft:N2}ft)";
                 }
             });
+        }
+    }
+
+    public void SetLatLong(float lat, float lon)
+    {
+        if (uvSphere)
+        {
+            uvSphere.rotation = Quaternion.Euler(lat,lon,0);
         }
     }
 
