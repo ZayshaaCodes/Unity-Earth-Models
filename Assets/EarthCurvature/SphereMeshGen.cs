@@ -101,12 +101,17 @@ public class SphereMeshGen : MonoBehaviour {
 
     public void genSphereMesh()
     {
+        if (mesh == null)
+        {
+            mesh = new Mesh();
+        }
 
-        int top = 90 - Math.Abs(startLatAngle) < .0001f ? 1 : LonSegs + 1;
-        int bottom = 90 - Math.Abs(endLatAngle) < .0001f ? 1 : LonSegs + 1;
+        int top = LonSegs + 1;
+        int bottom = LonSegs + 1;
         int mid = (LonSegs + 1) * (LatSegs - 1);
 
         points = new Vector3[top + bottom + mid];
+        uvs = new Vector2[top + bottom + mid];
         
         var latStep = (endLatAngle - startLatAngle) / LatSegs;
         var lonStep = (endLonAngle - startLonAngle) / LonSegs;
@@ -115,32 +120,62 @@ public class SphereMeshGen : MonoBehaviour {
         var pntIndex = 0;
         for (int i = 0; i <= LatSegs; i++)
         {
+            var lat = startLatAngle + latStep * i;
+            var v = Mathf.InverseLerp(-90, 90, lat);
+
             if (i == 0)
             {
                 for (int j = 0; j < top; j++)
                 {
-                    Vector3 sp = GetSpherePoint(startLatAngle, startLonAngle + j * lonStep);
+                    var lon = startLonAngle + lonStep * j;
+
+                    var clampedlon = (lon + 180) % 360 - 180;
+                    clampedlon = (clampedlon - 180) % 360 + 180;
+                    var uTile = Mathf.FloorToInt((lon + 180) / 360);
+
+                    var u = Mathf.InverseLerp(-180, 180, clampedlon) + uTile;
+
+                    Vector3 sp = GetSpherePoint(startLatAngle, lon);
                     //Debug.DrawLine(Vector3.zero, sp, Color.blue);
                     points[pntIndex] = sp;
+                    uvs[pntIndex] = new Vector2(u, v);
                     pntIndex++;
                 }
             } else if (i == LatSegs)
             {
                 for (int j = 0; j < bottom; j++)
                 {
-                    Vector3 sp = GetSpherePoint(endLatAngle, startLonAngle + j * lonStep);
+                    var lon = startLonAngle + lonStep * j;
+
+                    var clampedlon = (lon + 180) % 360 - 180;
+                    clampedlon = (clampedlon - 180) % 360 + 180;
+                    var uTile = Mathf.FloorToInt((lon + 180) / 360);
+
+                    var u = Mathf.InverseLerp(-180, 180, clampedlon) + uTile;
+
+                    Vector3 sp = GetSpherePoint(endLatAngle, lon);
                     //Debug.DrawLine(Vector3.zero, sp, Color.red);
                     points[pntIndex] = sp;
+                    uvs[pntIndex] = new Vector2(u, v);
                     pntIndex++;
                 }
             } else
             {
                 for (int j = 0; j < LonSegs + 1; j++)
                 {
-                    Vector3 sp = GetSpherePoint(startLatAngle + latStep * i, startLonAngle + lonStep * j);
+                    var lon = startLonAngle + lonStep * j;
+
+                    var clampedlon = (lon + 180) % 360 - 180;
+                    clampedlon = (clampedlon - 180) % 360 + 180;
+                    var uTile = Mathf.FloorToInt((lon + 180) / 360);
+
+                    var u = Mathf.InverseLerp(-180, 180, clampedlon) + uTile;
+
+                    Vector3 sp = GetSpherePoint(lat, lon);
                     //Debug.DrawLine(Vector3.zero, GetSpherePoint(startLatAngle + latStep * i, startLonAngle + lonAngle * j),Color.yellow);
 
                     points[pntIndex] = sp;
+                    uvs[pntIndex] = new Vector2(u,v);
                     pntIndex++;
                 }
             }
@@ -172,7 +207,7 @@ public class SphereMeshGen : MonoBehaviour {
         mesh.triangles = null;
         mesh.vertices = points;
         mesh.triangles = tris;
-        //mesh.uv = uvs;
+        mesh.uv = uvs;
         mesh.RecalculateNormals();
 
         mf.sharedMesh = mesh;

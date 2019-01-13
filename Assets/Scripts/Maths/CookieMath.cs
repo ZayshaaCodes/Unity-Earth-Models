@@ -108,5 +108,9 @@ public static class CookieMath
         return ClampDouble(t - Math.Floor(t / length) * length, 0.0, length);
     }
 
+    public static float InverseLerpInt(float val, int a, int b)
+    {
+        return (val - a) / (b - a);
+    }
 
 }

@@ -72,12 +72,12 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _Exposure: 2.22
+    - _Exposure: 3.06
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _Latitude: 30
-    - _Longitude: 0
+    - _Latitude: 45
+    - _Longitude: 0.36
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
@@ -89,8 +89,8 @@ Material:
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 1
-    - _value: 0.047
-    - _value2: 0.1
+    - _value: 0.045
+    - _value2: 0.047
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
